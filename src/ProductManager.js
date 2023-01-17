@@ -1,4 +1,4 @@
-fs = require('fs');
+import fs from 'fs';
 const NAME_FILE = 'products.json'
 
 class ProductManager {
@@ -7,7 +7,7 @@ class ProductManager {
     #_idCount = 0;
 
 
-    constructor(path = '../src') {
+    constructor(path = './src') {
         this.#_path = `${path}/${NAME_FILE}`;
         this.#_productList = this.getProducts();
     }
@@ -24,10 +24,14 @@ class ProductManager {
         this.#_productList.push(this.validateObject({
             title: newProduct.title,
             description: newProduct.description,
-            price: newProduct.price,
-            thumbnail: newProduct.thumbnail,
             code: newProduct.code,
+            price: newProduct.price,
+            status: newProduct.status,
             stock: newProduct.stock,
+            category: newProduct.category,
+            thumbnail: newProduct.thumbnail,
+            
+            status: true,
             id: this.#_idCount
         }))
 
@@ -51,6 +55,7 @@ class ProductManager {
                 throw error.message
             }
         }
+        
         return this.#_productList;
     }
 
@@ -64,14 +69,19 @@ class ProductManager {
     updateProduct(dataUpdate, id) {
         delete dataUpdate.id;
 
-        if (!this.existeValueInArray(this.#_productList, this.#_idCount)) {
+        if (!this.existeValueInArray(this.#_productList, id)) {
             throw 'El producto a actualizar no Existe'
         }
-        this.#_productList.map((product) => {
-            if (product.id === id) {
-                product = { ...product }
+        
+        this.#_productList = this.#_productList.map((product) => {
+           
+            if (product.id == id) {
+                return product = { ...product ,...dataUpdate  }  
             }
+            return product
         })
+       
+        this.saveDataFile(this.#_path, this.#_productList);
     }
 
     // Eliminasdasdasda un Producto
@@ -87,6 +97,7 @@ class ProductManager {
 
 
     saveDataFile = (path, dataSave) => {
+        console.log(dataSave);
         try {
             fs.writeFileSync(path, JSON.stringify(dataSave))
         } catch (error) {
@@ -117,20 +128,22 @@ class ProductManager {
         }
         if (propMissings.length > 0) {
             throw `Propiedades Faltantes: ${propMissings}`
+            
         }
         return data
     }
 
     existeValueInArray = (array, id) => {
-        if (array.find((value) => value.id === id)) {
+        if (array.find((value) => value.id == id)) {
             return true;
         }
         return false;
     }
 
 };
+export  { ProductManager };
 
-module.exports =  ProductManager;
+//module.exports =  ProductManager;
 
 
 

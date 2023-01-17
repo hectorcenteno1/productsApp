@@ -88,5 +88,16 @@
         "code": "ADXC10XZ",
         "stock": 1,
         "id": 10
+    },
+    {
+        "title": "Corona",
+        "description": "Cerveza  4L",
+        "code": "ADXC10XZ",
+        "price": 100,
+        "status": true,
+        "stock": 4,
+        "category": "bebida con alcohol",
+        "thumbnail": "1",
+        "id": 11
     }
 ]
