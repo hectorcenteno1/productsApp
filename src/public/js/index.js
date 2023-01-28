@@ -4,9 +4,8 @@ const container = document.getElementById("realTimeProductsContainer");
 
 socket.on("products", (data) => {
   let html = "";
-  
+
   data.forEach((product) => {
-    
     html += `
     <div style="width: 30%;">
       <div >
@@ -20,6 +19,7 @@ socket.on("products", (data) => {
     <h2>${product.price}</h2>
     <p>${product.description}</p>
   </div>`;
+    container.innerHTML = html;
   });
-  container.innerHTML = html;
+
 });
