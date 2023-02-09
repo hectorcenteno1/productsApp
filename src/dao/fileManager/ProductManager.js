@@ -94,8 +94,6 @@ class ProductManager {
         this.saveDataFile(this.#_path, this.#_productList);
     };
 
-
-
     saveDataFile = (path, dataSave) => {
         console.log(dataSave);
         try {
