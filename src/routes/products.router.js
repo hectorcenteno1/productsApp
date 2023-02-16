@@ -9,10 +9,8 @@ const router = Router();
 const prodManager = new product();
 
 router.get('/', async (req, res) => {
-
-    let products = await prodManager.getProducts();
-
-
+    const { query, limit, sort, page } = req.query;
+    let products = await prodManager.getProducts(query, limit, page, sort);
     res.send({ status: "success", payload: products });
 });
 
@@ -38,19 +36,19 @@ router.get("/realTimeProducts", async (req, res) => {
     }
 });
 
-router.get('/:pId', async  (req, res) => {
+router.get('/:pId', async (req, res) => {
 
     const idSolicitado = req.params.pId;
     console.log("entre get Pid");
     let product = await prodManager.getProductById(idSolicitado);
 
-    if(!product.error){
-     res.send({ status: "success", payload: product });
-        
-    } else{
+    if (!product.error) {
+        res.send({ status: "success", payload: product });
+
+    } else {
         res.status(product.status).send(product);
     }
-    
+
 
 });
 

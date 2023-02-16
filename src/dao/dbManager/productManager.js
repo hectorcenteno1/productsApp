@@ -3,93 +3,79 @@ import { productModel } from "../models/product.js";
 export default class Product {
 
     constructor() {
-
         console.log("working in mongoose");
-
     }
 
-
-    getProducts = async (limit) => {
-
+    getProducts = async (query = '{}', limit = 10, page = 1, sort) => {
+        const options = {
+            page,
+            limit,
+            sort:{price: sort}
+          };
+          if(!sort){
+            delete options.sort
+          }
         try {
-            if (!limit) {
+                const result = await productModel.paginate(JSON.parse(query), options);
+                return result
+            }
+        catch (error) {
+                return console.log(error);;
 
-                return await productModel.find()
-            } else {
-                productModel.find().limit(limit)
             }
         }
-        catch (error) {
-            return console.log(error);;
-
-        }
-    }
 
     getProductById = async (id) => {
-        try {
-            
+            try {
 
-            let product = await productModel.findById(id);
-            if (product === null) {
-                return {
-                    error: `Product with id ${id} not found`,
+                let product = await productModel.findById(id);
+                if (product === null) {
+                    return {
+                        error: `Product with id ${id} not found`,
+                    }
                 }
-            }
-            
-            return product;
-
-        } catch (error) {
-            return {
-                error: `An error occurred while obtaining the product with id ${id}`,
-            };
-        }
-
-    }
-
-    addProduct = async (prod) => {
-        let products = await productModel.create(prod);
-        return products;
-    }
-
-    updateProduct = async (id, prod) => {
-        try {
-            let productUpdate = await productModel.findByIdAndUpdate(id, prod, { new: true });
-            if (productUpdate === null) {
+                return product;
+            } catch (error) {
                 return {
-                    error: `Product with id ${id} not found`,
-                }
-            }
-            return productUpdate;
-
-        } catch (error) {
-            return {
-                error: `An error occurred while obtaining the product with id ${id}`,
-            };
-        }
-        let product = await productModel.findByIdAndUpdate(id, prod);
-        return product;
-
-    }
-
-    deleteProduct = async (id) => {
-        try {
-            let productDeleted = await productModel.findByIdAndDelete(id);
-
-            if (productDeleted === null) {
-                return {
-                    error: `Product with id ${id} not found`,
-                }
-            } else {
-                return `Product with id ${id} deleted`;
-
+                    error: `An error occurred while obtaining the product with id ${id}`,
+                };
             }
         }
-        catch (error) {
-            return console.log(error);
 
+        addProduct = async (prod) => {
+            let products = await productModel.create(prod);
+            return products;
         }
 
+        updateProduct = async (id, prod) => {
+            try {
+                let productUpdate = await productModel.findByIdAndUpdate(id, prod, { new: true });
+                if (productUpdate === null) {
+                    return {
+                        error: `Product with id ${id} not found`,
+                    }
+                }
+                return productUpdate;
+            } catch (error) {
+                return {
+                    error: `An error occurred while obtaining the product with id ${id}`,
+                };
+            }
+        }
+
+        deleteProduct = async (id) => {
+            try {
+                let productDeleted = await productModel.findByIdAndDelete(id);
+                if (productDeleted === null) {
+                    return {
+                        error: `Product with id ${id} not found`,
+                    }
+                } else {
+                    return `Product with id ${id} deleted`;
+                }
+            }
+            catch (error) {
+                return console.log(error);
+            }
+        }
     }
-
-
-}
