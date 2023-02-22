@@ -1,0 +1,27 @@
+<div class="titlePage">
+  <h1>Products</h1>
+</div>
+<div class="productsContainer">
+    
+  {{#each payload}}
+    <div class="productCard">
+      <img class="productImg" src="https://coca-colafemsa.com/wp-content/uploads/2019/11/2.png" />
+      <div class="productTitle">{{this.title}}</div>
+      <div class="productDescription">{{this.description}}</div>
+      <div class="productPrice">{{this.price}}</div>
+      <div class="productCategory">{{this.category}}</div>
+      <button class="productButton" onclick={addToCart("{{this._id}}")}>add to cart</button>
+    </div>
+  {{/each}}
+</div>
+
+<div class="productsPaginate">
+  <a href="{{prevLink}}" class="paginateLeftArrow">←</a>
+  <div class="paginateIndexContainer">
+    {{resPage}}
+  </div>
+  <a href="{{nextLink}}" class="paginateRightArrow">→</a>
+</div>
+
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/products.js"></script>

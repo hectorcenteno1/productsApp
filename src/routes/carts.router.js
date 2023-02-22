@@ -55,10 +55,8 @@ router.post('/:cId/product/:pId', async (req, res) => {
 
     const addProdToCart = await cartManager.addProductToCart(carritoId, productId);
 
-    console.log("error", addProdToCart);
     try {
         if (!addProdToCart.error) {
-            console.log("entre");
             res.send(addProdToCart);
 
         }
@@ -80,11 +78,11 @@ router.put("/:cid/product", async (req, res) => {
     }
 });
 
-router.put("/:cid/product/:pid", async (req, res) => {
-    const { cartId, productId } = req.params;
+router.put('/:cid/product/:pid', async (req, res) => {
+
+    const { cid, pid } = req.params;
     const { quantity } = req.body;
-    console.log(quantity);
-    const updateProduct = await cartManager.updateQuantity(cartId, productId, quantity);
+    const updateProduct = await cartManager.updateQuantity(cid, pid, quantity);
 
     if (!updateProduct.error) {
         res.send(updateProduct)
@@ -97,26 +95,26 @@ router.put("/:cid/product/:pid", async (req, res) => {
 router.delete("/:cid/product/:pid", async (req, res) => {
     const cartId = req.params.cid;
     const productId = req.params.pid;
-    const deleteProduct = await cartManager.removeToCart(cartId, productId);
-  
-    if(!deleteProduct.error){
+    const deleteProduct = await cartManager.deleteProdCart(cartId, productId);
+
+    if (!deleteProduct.error) {
         res.send(deleteProduct)
-    }else{
+    } else {
         res.status(deleteProduct.status).send(deleteProduct);
     }
-  });
-  
-  router.delete("/:cid/products", async (req, res) => {
+});
+
+router.delete("/:cid/products", async (req, res) => {
     const cartId = req.params.cid;
-    const deleteResponse = await dbcm.removeAllProductsToCart(cartId);
-    if(!deleteResponse.error){
+    const deleteResponse = await cartManager.removeAllToCart(cartId);
+    if (!deleteResponse.error) {
         res.send(deleteResponse)
 
-    }else{
+    } else {
         res.status(deleteResponse.status).send(deleteResponse);
     }
-    
-  });
+
+});
 
 
 export default router;

@@ -18,6 +18,7 @@ router.get("/realTimeProducts", async (req, res) => {
 
     const { limit } = req.query;
     const resultado = await prodManager.getProducts();
+    console.log(resultado);
 
     if (!resultado.error) {
 
@@ -39,7 +40,7 @@ router.get("/realTimeProducts", async (req, res) => {
 router.get('/:pId', async (req, res) => {
 
     const idSolicitado = req.params.pId;
-    console.log("entre get Pid");
+    
     let product = await prodManager.getProductById(idSolicitado);
 
     if (!product.error) {
@@ -55,7 +56,6 @@ router.get('/:pId', async (req, res) => {
 router.post('/', async (req, res) => {
 
     const product = req.body;
-
 
     try {
         let result = await prodManager.addProduct(product);

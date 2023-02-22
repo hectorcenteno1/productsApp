@@ -27,13 +27,11 @@ export default class Cart {
             const carts = await cartModel.find().populate("products.pid");
             return !carts.length
                 ? {
-                    status: 404,
                     error: "No carts found",
                 }
                 : carts;
         } catch (error) {
             return {
-                status: 500,
                 error: "An error occurred while obtaining the carts",
             };
         }
@@ -59,43 +57,37 @@ export default class Cart {
 
     addProductToCart = async (cartid, productId) => {
         try {
-            const cart = await cartModel.findById(cartid);
 
+            const pid = productId;
+            const cart = await cartModel.findById(cartid);
             if (cart === null) {
                 return {
                     error: `cart with id ${cartid} does not exist`
                 }
             }
-
             const prod = await productMg.getProductById(productId);
-
             if (prod === null) {
                 return {
                     error: `product with id ${productId} does not exist`
                 }
             }
-
-            const productInCart = await cartModel.findById(productId);
-
-            if (productInCart) {
-                const productIndex = cart.findIndex(product => product.productId === productId);
-                const newCart = cart;
-                newCart[productIndex].quantity++;
-
-                return await cartModel.findByIdAndUpdate(cartid, { products: newCart });
+            const productInCart = cart.products.find((product) => product.pid == pid);
+            if (!productInCart) {
+                    return await cartModel.findByIdAndUpdate(cartid, {
+                        $push: { products: { pid, quantity: 1 } },
+                    });
             }
-
-            return await cartModel.findByIdAndUpdate(cartid, {
-                $push: { products: { productId, quantity: 1 } },
-            });
+            return await cartModel.findOneAndUpdate({ "_id": cartid, 'products._id': productInCart._id },{ $inc: { "products.$.quantity": 1 } });
+            
         } catch (error) {
             return {
-                error: `an error ocurred while adding the product`,
+                error: error.message
+
             };
         }
     }
 
-    deleteCart = async (cartid, productId) => {
+    deleteProdCart = async (cartid, productId) => {
         try {
             const cartId = await this.getCartById(cartid);
             if (cartId.error) {
@@ -137,7 +129,9 @@ export default class Cart {
             }
 
             const products = await productMg.getProductById(productId);
-            console.log("llegue", carts, products);
+
+            
+            
             if (products.error0) {
                 return {
                     error: 'Product not found'
@@ -146,7 +140,7 @@ export default class Cart {
             console.log(carts, products);
 
             const productInCart = carts.find((product) => product.productId._id == productId);
-
+            console.log(productInCart);
             if (productInCart) {
                 const productIndex = carts.findIndex((product) => product.productId._id == productId);
 
