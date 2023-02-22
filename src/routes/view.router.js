@@ -28,11 +28,11 @@ router.get("/products", async (req, res) => {
     } = resultado;
 
     if (hasNextPage)
-        nextLink = `http://localhost:8080/products/?${query ? "query=" + query + "&" : ""
+        nextLink = `http://localhost:8080/view/products?${query ? "query=" + query + "&" : ""
             }${"limit=" + limit}${"&page=" + (+resPage + 1)}${sort ? "&sort=" + sort : ""
             }`;
     if (hasPrevPage)
-        prevLink = `http://localhost:8080/products/?${query ? "query=" + query + "&" : ""
+        prevLink = `http://localhost:8080/view/products?${query ? "query=" + query + "&" : ""
             }${"limit=" + limit}${"&page=" + (+resPage - 1)}${sort ? "&sort=" + sort : ""
             }`;
 
